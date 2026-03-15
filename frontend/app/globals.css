@@ -95,12 +95,6 @@ body {
   font-size: 16px;
 }
 
-.section-title {
-  margin: 0 0 16px;
-  font-size: 24px;
-  font-weight: 700;
-}
-
 .grid {
   display: grid;
   gap: 18px;
@@ -317,6 +311,66 @@ body {
 
 .prompt-list li {
   margin-bottom: 10px;
+}
+
+.chart-shell {
+  position: relative;
+  padding-left: 44px;
+}
+
+.chart-svg {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
+.chart-axis {
+  stroke: #94a3b8;
+  stroke-width: 1.5;
+}
+
+.chart-grid {
+  stroke: #e5e7eb;
+  stroke-width: 1;
+}
+
+.chart-line {
+  stroke: #0f172a;
+  stroke-width: 3;
+}
+
+.chart-point {
+  fill: #0f172a;
+}
+
+.chart-axis-label {
+  position: absolute;
+  left: 0;
+  font-size: 12px;
+  color: #6b7280;
+}
+
+.chart-axis-label.top {
+  top: 0;
+}
+
+.chart-axis-label.middle {
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.chart-axis-label.bottom {
+  bottom: 24px;
+}
+
+.chart-xlabels {
+  display: grid;
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+  gap: 8px;
+  margin-top: 8px;
+  color: #6b7280;
+  font-size: 12px;
+  text-align: center;
 }
 
 @media (max-width: 900px) {

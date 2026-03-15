@@ -1,5 +1,11 @@
 import KpiCard from "../components/kpi-card";
-import { fetchAssets, fetchIncidents, fetchKpis } from "../lib/api";
+import LineChart from "../components/line-chart";
+import {
+  fetchAssets,
+  fetchIncidents,
+  fetchKpis,
+  fetchTimeseries,
+} from "../lib/api";
 import ScenarioButtons from "./scenario-buttons";
 
 function statusBadgeClass(status: string) {
@@ -15,12 +21,26 @@ function severityClass(severity: string) {
   return "severity severity-low";
 }
 
+function shortLabel(timestamp: string) {
+  const raw = timestamp.split("T")[1] ?? timestamp;
+  return raw.slice(0, 5);
+}
+
 export default async function Page() {
-  const [kpis, assets, incidents] = await Promise.all([
+  const [kpis, assets, incidents, timeseries] = await Promise.all([
     fetchKpis(),
     fetchAssets(),
     fetchIncidents(),
+    fetchTimeseries(),
   ]);
+
+  const reactorTrend = timeseries
+    .filter((row) => row.asset_id === "reactor_1")
+    .slice(-6)
+    .map((row) => ({
+      label: shortLabel(row.timestamp),
+      value: row.temperature,
+    }));
 
   return (
     <main>
@@ -96,23 +116,12 @@ export default async function Page() {
       </div>
 
       <div className="grid grid-panels">
-        <section className="card">
-          <h2 className="card-title">Assets</h2>
-          <p className="card-subtitle">
-            Core assets currently tracked by the monitoring service.
-          </p>
-
-          <div className="asset-list">
-            {assets.map((asset: any) => (
-              <div className="asset-item" key={asset.asset_id}>
-                <div className="asset-name">{asset.name}</div>
-                <div className="asset-meta">
-                  Type: {asset.asset_type} · ID: {asset.asset_id}
-                </div>
-              </div>
-            ))}
-          </div>
-        </section>
+        <LineChart
+          title="Recent Trends"
+          subtitle="Reactor-1 temperature over the latest six time steps."
+          points={reactorTrend}
+          unit="°"
+        />
 
         <section className="card">
           <h2 className="card-title">Incidents</h2>
@@ -151,6 +160,24 @@ export default async function Page() {
           )}
         </section>
       </div>
+
+      <section className="card">
+        <h2 className="card-title">Assets</h2>
+        <p className="card-subtitle">
+          Core assets currently tracked by the monitoring service.
+        </p>
+
+        <div className="asset-list">
+          {assets.map((asset: any) => (
+            <div className="asset-item" key={asset.asset_id}>
+              <div className="asset-name">{asset.name}</div>
+              <div className="asset-meta">
+                Type: {asset.asset_type} · ID: {asset.asset_id}
+              </div>
+            </div>
+          ))}
+        </div>
+      </section>
     </main>
   );
 }
