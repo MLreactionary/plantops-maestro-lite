@@ -11,27 +11,42 @@ export default function ScenarioButtons() {
 
   async function run(path: string, label: string) {
     setLoading(label);
-    await fetch(`${API}${path}`, { method: "POST" });
-    setLoading("");
-    router.refresh();
+    try {
+      await fetch(`${API}${path}`, { method: "POST" });
+      router.refresh();
+    } finally {
+      setLoading("");
+    }
   }
 
   return (
-    <div style={{ display: "flex", gap: 12, flexWrap: "wrap", marginTop: 12 }}>
-      <button onClick={() => run("/demo/inject/sensor_drift", "sensor")}>
-        {loading === "sensor" ? "Working..." : "Inject Sensor Drift"}
+    <div className="button-row">
+      <button
+        className="button button-primary"
+        onClick={() => run("/demo/inject/sensor_drift", "sensor")}
+      >
+        {loading === "sensor" ? "Applying..." : "Inject Sensor Drift"}
       </button>
 
-      <button onClick={() => run("/demo/inject/cooling_valve_stiction", "cooling")}>
-        {loading === "cooling" ? "Working..." : "Inject Cooling Valve"}
+      <button
+        className="button button-primary"
+        onClick={() => run("/demo/inject/cooling_valve_stiction", "cooling")}
+      >
+        {loading === "cooling" ? "Applying..." : "Inject Cooling Valve"}
       </button>
 
-      <button onClick={() => run("/demo/inject/pump_degradation", "pump")}>
-        {loading === "pump" ? "Working..." : "Inject Pump Degradation"}
+      <button
+        className="button button-primary"
+        onClick={() => run("/demo/inject/pump_degradation", "pump")}
+      >
+        {loading === "pump" ? "Applying..." : "Inject Pump Degradation"}
       </button>
 
-      <button onClick={() => run("/demo/reset", "reset")}>
-        {loading === "reset" ? "Working..." : "Reset Plant"}
+      <button
+        className="button button-danger"
+        onClick={() => run("/demo/reset", "reset")}
+      >
+        {loading === "reset" ? "Resetting..." : "Reset Plant"}
       </button>
     </div>
   );
